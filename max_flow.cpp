@@ -1,14 +1,17 @@
 struct Edge {
     int to;
     ll cap, f;
+    Edge() : to(0), cap(0), f(0) {}
     Edge(int to, ll cap) : to(to), cap(cap), f(0) {}
 };
 struct FlowNetwork {
-    ll s, t, n, m;
+    ll s, t;
     vector<int> g[MAX_N];
     int dist[MAX_N], id[MAX_N];
     vector<Edge> edges;
-    FlowNetwork(ll s, ll t, ll n) : s(s), t(t), n(n) {}
+    FlowNetwork() : s(MAX_N - 2), t(MAX_N - 1) {}
+    FlowNetwork(ll s, ll t) : s(s), t(t) {}
+    void reset() {edges.resize(0); for(int i = 0; i < MAX_N; i ++) {g[i].resize(0);}}
     void addEdge(ll a, ll b, ll cap) {
         g[a].push_back(edges.size());
         edges.emplace_back(b, cap);
@@ -22,10 +25,10 @@ struct FlowNetwork {
         dist[s] = 0;
         while(!q.empty()) {
             ll curr = q.front(); q.pop();
-            for(auto id : g[curr]) {
-                if(dist[edges[id].to] != -1 || edges[id].cap - edges[id].f < 1) {continue;}
-                dist[edges[id].to] = dist[curr] + 1;
-                q.push(edges[id].to);
+            for(auto it : g[curr]) {
+                if(dist[edges[it].to] != -1 || edges[it].cap - edges[it].f < 1) {continue;}
+                dist[edges[it].to] = dist[curr] + 1;
+                q.push(edges[it].to);
             }
         }
         return dist[t] != -1;
@@ -44,14 +47,11 @@ struct FlowNetwork {
         }
         return 0;
     }
-    ll callDfs() {
-        return dfs(s, mod);
-    }
     ll maxFlow() {
         ll ret = 0;
         while(bfs()) {
             ll p;
-            while(p = callDfs()) {
+            while(p = dfs(s, mod)) {
                 ret += p;
             }
         }
