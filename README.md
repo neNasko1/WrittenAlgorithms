@@ -1,5 +1,5 @@
 # WrittenAlgorithms
-Easy to copy and paste
+Copy-pastable algorithms and data structures for competitive programming.
 
 TODO:
 Add normal treap.
